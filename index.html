@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vídeos Sincronizados</title>
+    <style>
+        /* Container do vídeo principal */
+        .video-container {
+            position: relative;
+            width: 100%; /* Largura total da tela */
+            max-width: 640px; /* Limite de largura em telas grandes */
+            height: auto; /* Ajusta a altura proporcionalmente */
+        }
+
+        /* Vídeo principal */
+        .background-video {
+            width: 100%; /* Ocupa toda a largura disponível */
+            height: auto; /* Mantém a proporção */
+        }
+
+        /* Vídeo sobreposto (Intérprete de Libras) */
+        .overlay-video {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 20%; /* 1/5 da largura do vídeo principal */
+            height: 33%; /* 1/3 da altura do vídeo principal */
+            display: none; /* Inicialmente oculto */
+            border: 2px solid white; /* Borda opcional para destaque */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Sombra para dar profundidade */
+        }
+
+        /* Estilo do botão */
+        .button-container {
+            margin-top: 15px;
+            text-align: center; /* Centraliza o botão */
+        }
+
+        .toggle-button {
+            background-color: #FF0000; /* Cor vermelha */
+            color: white; /* Texto branco */
+            padding: 10px 20px; /* Espaçamento interno */
+            border: none; /* Remover borda padrão */
+            border-radius: 25px; /* Bordas arredondadas */
+            font-size: 16px; /* Tamanho da fonte */
+            cursor: pointer; /* Cursor de mão ao passar o mouse */
+            transition: background-color 0.3s ease; /* Efeito suave ao passar o mouse */
+        }
+
+        .toggle-button:hover {
+            background-color: #CC0000; /* Cor mais escura ao passar o mouse */
+        }
+
+        /* Media queries para telas menores */
+        @media (max-width: 768px) {
+            .overlay-video {
+                width: 30%; /* Aumenta a largura em telas menores */
+                height: 40%; /* Aumenta a altura em telas menores */
+                bottom: 5px; /* Ajusta o espaçamento inferior */
+                right: 5px; /* Ajusta o espaçamento lateral */
+            }
+
+            .toggle-button {
+                padding: 8px 16px; /* Reduz o tamanho do botão em telas menores */
+                font-size: 14px; /* Reduz o tamanho da fonte */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .overlay-video {
+                width: 40%; /* Aumenta ainda mais a largura em telas muito pequenas */
+                height: 50%; /* Aumenta ainda mais a altura */
+                bottom: 3px; /* Ajusta o espaçamento inferior */
+                right: 3px; /* Ajusta o espaçamento lateral */
+            }
+
+            .toggle-button {
+                padding: 6px 12px; /* Reduz ainda mais o tamanho do botão */
+                font-size: 12px; /* Reduz ainda mais o tamanho da fonte */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="video-container">
+    <!-- Vídeo de fundo -->
+    <video class="background-video" controls>
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        Seu navegador não suporta o elemento de vídeo.
+    </video>
+
+    <!-- Vídeo sobreposto (intérprete de Libras) -->
+    <video class="overlay-video" controls>
+        <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
+        Seu navegador não suporta o elemento de vídeo.
+    </video>
+</div>
+
+<div class="button-container">
+    <button class="toggle-button" onclick="toggleOverlayVideo()">Ativar/Desativar Intérprete de Libras</button>
+</div>
+
+<script>
+    const backgroundVideo = document.querySelector('.background-video');
+    const overlayVideo = document.querySelector('.overlay-video');
+
+    function toggleOverlayVideo() {
+        if (overlayVideo.style.display === 'none') {
+            overlayVideo.style.display = 'block';
+            overlayVideo.currentTime = backgroundVideo.currentTime; // Sincronizar o tempo
+            if (!backgroundVideo.paused) {
+                overlayVideo.play(); // Reproduzir o vídeo sobreposto se o vídeo principal já estiver tocando
+            }
+        } else {
+            overlayVideo.style.display = 'none';
+            overlayVideo.pause();
+        }
+    }
+
+    // Sincronizar a reprodução entre os vídeos
+    backgroundVideo.addEventListener('play', function() {
+        overlayVideo.currentTime = backgroundVideo.currentTime; // Sincronizar o tempo
+        overlayVideo.play(); // Reproduzir o vídeo sobreposto quando o vídeo principal começar
+    });
+
+    // Sincronizar a pausa entre os vídeos
+    backgroundVideo.addEventListener('pause', function() {
+        overlayVideo.pause(); // Pausar o vídeo sobreposto quando o vídeo principal for pausado
+    });
+
+    // Sincronizar a busca no tempo entre os vídeos
+    backgroundVideo.addEventListener('seeked', function() {
+        overlayVideo.currentTime = backgroundVideo.currentTime; // Ajustar o tempo do vídeo sobreposto quando o vídeo principal for adiantado ou atrasado
+    });
+</script>
+
+</body>
+</html>
